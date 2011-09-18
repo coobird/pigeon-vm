@@ -2,6 +2,9 @@
 #include <string.h>
 #include "pigeon.h"
 
+/*
+ * Initializes the Pigeon VM's states.
+ */
 void init_vm(STATE* state) {
 	/* Initialize the states */
 	state->acc = 0;
@@ -24,6 +27,10 @@ void init_vm(STATE* state) {
 	}
 }
 
+/*
+ * Fetches an instruction from the current memory location and loads it into
+ * the `opcode` and `operand` registers.
+ */
 void fetch(STATE* state) {
 	unsigned short instr = state->mem[state->pc];
 	
@@ -31,6 +38,9 @@ void fetch(STATE* state) {
 	state->operand = instr & 0x0FFF;
 }
 
+/*
+ * Executes a single instruction.
+ */
 void execute(STATE* state) {
 
 	unsigned short opcode = state->opcode;
@@ -125,17 +135,23 @@ void execute(STATE* state) {
 }
 
 void run(STATE* state) {
-	int i = 0;
-	char opcode[5];
+
+	int instruction_count = 0;
+	const int MAX_INST_COUNT = 500;
 	unsigned short op;
+
+	/*
+	 * Variable used to display the opcode mnemonic.
+	 */
+	char opcode[5];
 
 	/*
 	 * Run the VM.
 	 * - Stops when the PC reaches 4096.
 	 * - Stops when more than 500 instructions have been executed to stop out-of-control programs
 	 */
-	while (state->pc < MEM_SIZE && i < 500) {
-		i++;	
+	while (state->pc < MEM_SIZE && instruction_count < MAX_INST_COUNT) {
+		instruction_count++;
 		fetch(state);
 
 		op = state->opcode;

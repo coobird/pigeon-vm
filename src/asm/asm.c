@@ -27,11 +27,17 @@ typedef struct {
 static ENTRY entries[100];
 static int entry_size = 0;
 
+/*
+ * Place an entry into the symbol table.
+ */
 void place_entry(char* varname, int address, ENTRY* entries, int entry_num) {
 	entries[entry_num].varname = varname;
 	entries[entry_num].value = address;
 }
 
+/*
+ * Gets an entry from the symbol table.
+ */
 int get_entry(char* varname, ENTRY* entries, int entry_size) {
 	int i = 0;
 	for (i = 0; i < entry_size; i++) {
@@ -42,6 +48,9 @@ int get_entry(char* varname, ENTRY* entries, int entry_size) {
 	return -1;
 }
 
+/*
+ * Parses a single line of Pigeon Assembly.
+ */
 void parse(char* line, STATE* state) {
 
 	/* Skip comment lines and blank lines */
@@ -148,6 +157,10 @@ void parse(char* line, STATE* state) {
 	state->mem[address] = (opcode_value << 12) + value;
 }
 
+/*
+ * Runs the routine to load Pigeon Assembly instructions from STDIN into the
+ * Pigeon VM's memory.
+ */
 void load_memory(STATE* state) {
 	char line[80];
 
