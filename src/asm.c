@@ -44,8 +44,8 @@ int get_entry(char* varname, ENTRY* entries, int entry_size) {
 
 void parse(char* line, STATE* state) {
 
-	/* skip a comment line */
-	if (line[0] == '#') {
+	/* Skip comment lines and blank lines */
+	if (line[0] == '#' || line[0] == '\r' || line[0] == '\n') {
 		return;
 	}
 
