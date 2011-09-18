@@ -9,7 +9,7 @@
  */
 
 #include <stdio.h>
-#include "pigeon.h"
+#include "../pigeon/pigeon.h"
 #include <string.h>
 #include <stdlib.h>
 

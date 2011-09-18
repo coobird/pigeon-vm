@@ -10,8 +10,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "pigeon.h"
-#include "asm.h"
+#include "pigeon/pigeon.h"
+#include "asm/asm.h"
 
 int main() {
 	
