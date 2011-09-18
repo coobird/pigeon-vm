@@ -15,7 +15,7 @@
 # Equivalent C code
 # -------------------
 # for (i = 0; i < 5; i++) {
-#   accumulator = 777
+#   accumulator = 777;
 # }
 
 # Start execution
