@@ -1,7 +1,14 @@
-all: pigeon-vm
+TARGET = pigeon-vm
+OBJS = src/main.o src/pigeon/pigeon.o src/asm/asm.o
+BUILT = $(TARGET) $(OBJS)
 
-pigeon-vm:
-	gcc -o $@ src/main.c src/pigeon/pigeon.c src/asm/asm.c
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	gcc -o $@ $^ 
+
+%.o: %.c
+	gcc -o $@ -c $<
 
 clean:
-	rm pigeon-vm
+	rm -f $(BUILT)
