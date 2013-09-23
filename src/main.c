@@ -20,13 +20,17 @@ void output_state_text(STATE* state) {
 		state->pc, opcode, state->operand, state->acc, state->csp, state->dsp);
 }
 
+void output_state_quiet(STATE* state) {
+}
+
 int main(int argc, char** argv) {
 	void* callback = &output_state_text;
 
-	int f_verbose = 0, f_json = 0, f_text = 0, f_output = 0;
+	int f_verbose = 0, f_json = 0, f_text = 0, f_quiet = 0, f_output = 0;
+	int cnt_outflags = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, "ovjt")) != -1) {
+	while ((opt = getopt(argc, argv, "ovqjt")) != -1) {
 		switch (opt) {
 			case 'v':
 				f_verbose = 1;
@@ -34,23 +38,31 @@ int main(int argc, char** argv) {
 			case 'o':
 				f_output = 1;
 				break;
+			case 'q':
+				f_quiet = 1;
+				cnt_outflags++;
+				break;
 			case 'j':
 				f_json = 1;
+				cnt_outflags++;
 				break;
 			case 't':
 				f_text = 1;
+				cnt_outflags++;
 				break;
 			default:
+				return -1;
 				;
 		}
 	}
 
-	if (f_json && f_text) {
-		printf("Cannot specify both JSON and text outputs.\n");
+	if (cnt_outflags > 1) {
+		printf("Can only speficy one of -j, -t, or -q.\n");
 		return -1;
-	} else {
-		if (f_json) callback = &output_state_json;
 	}
+
+	if (f_json) callback = &output_state_json;
+	if (f_quiet) callback = &output_state_quiet;
 	
 	STATE state;
 	
