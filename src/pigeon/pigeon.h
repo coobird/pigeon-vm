@@ -95,6 +95,6 @@ typedef struct state {
 void init_vm(STATE* state);
 void fetch(STATE* state);
 void execute(STATE* state);
-void run(STATE* state);
+void run(STATE* state, void (*callback)(STATE*));
 
 #endif /*PIGEON_H_*/
