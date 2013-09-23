@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 	init_vm(&state);
 
 	if (f_verbose) printf("Loading instructions from stdin.\n");
-	load_memory(&state);
+	load_memory(&state, f_verbose);
 
 	if (f_verbose) printf("Beginning execution.\n");
 	run(&state, callback);
