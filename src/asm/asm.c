@@ -150,7 +150,7 @@ void parse(char* line, STATE* state) {
 		opcode_value = POP;
 
 	else {
-		printf("Unknown opcode: %s\n", opcode);
+		fprintf(stderr, "Unknown opcode: %s\n", opcode);
 		return;
 	}
 

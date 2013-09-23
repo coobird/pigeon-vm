@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (cnt_outflags > 1) {
-		printf("Can only speficy one of -j, -t, or -q.\n");
+		fprintf(stderr, "Can only speficy one of -j, -t, or -q.\n");
 		return -1;
 	}
 
