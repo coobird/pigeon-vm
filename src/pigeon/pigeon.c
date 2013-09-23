@@ -195,13 +195,15 @@ void run(STATE* state, void (*callback)(STATE*)) {
 
 	/*
 	 * Run the VM.
-	 * - Stops when the PC reaches 4096.
+	 * - Stops when the PC reaches 4095.
 	 * - Stops when more than 500 instructions have been executed to stop out-of-control programs
 	 */
-	while (state->pc < MEM_SIZE && instruction_count < MAX_INST_COUNT) {
+	while (state->pc < MEM_SIZE - 1 && instruction_count < MAX_INST_COUNT) {
 		instruction_count++;
 		fetch(state);
 		callback(state);
 		execute(state);
 	}
+
+	callback(state);
 }
