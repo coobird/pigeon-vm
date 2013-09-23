@@ -23,6 +23,18 @@ void output_state_text(STATE* state) {
 void output_state_quiet(STATE* state) {
 }
 
+void print_usage(char* command) {
+	printf("Usage: %s [-v] [-t|-j|-q] [-o] [-h]\n", command);
+	printf("Options:\n");
+	printf("    -h    Displays this help\n");
+	printf("    -t    Outputs execution states in text format (default)\n");
+	printf("    -j    Outputs execution states in JSON format\n");
+	printf("    -q    Suppress execution state output\n");
+	printf("    -o    Outputs the final accumulator state\n");
+	printf("    -v    Verbose output\n");
+	printf("\n");
+}
+
 int main(int argc, char** argv) {
 	void* callback = &output_state_text;
 
@@ -30,7 +42,7 @@ int main(int argc, char** argv) {
 	int cnt_outflags = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, "ovqjt")) != -1) {
+	while ((opt = getopt(argc, argv, "ovqjth")) != -1) {
 		switch (opt) {
 			case 'v':
 				f_verbose = 1;
@@ -50,6 +62,8 @@ int main(int argc, char** argv) {
 				f_text = 1;
 				cnt_outflags++;
 				break;
+			case 'h':
+				print_usage(argv[0]);
 			default:
 				return -1;
 				;
