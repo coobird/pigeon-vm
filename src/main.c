@@ -23,13 +23,16 @@ void output_state_text(STATE* state) {
 int main(int argc, char** argv) {
 	void* callback = &output_state_text;
 
-	int f_verbose = 0, f_json = 0, f_text = 0;
+	int f_verbose = 0, f_json = 0, f_text = 0, f_output = 0;
 
 	int opt;
-	while ((opt = getopt(argc, argv, "vjt")) != -1) {
+	while ((opt = getopt(argc, argv, "ovjt")) != -1) {
 		switch (opt) {
 			case 'v':
 				f_verbose = 1;
+				break;
+			case 'o':
+				f_output = 1;
 				break;
 			case 'j':
 				f_json = 1;
@@ -62,5 +65,7 @@ int main(int argc, char** argv) {
 
 	if (f_verbose) printf("Finished execution.\n");
 	
+	if (f_output) printf("%i\n", state.acc);
+
 	return 0;
 }
