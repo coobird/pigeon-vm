@@ -181,17 +181,17 @@ char* _getline(FILE* in) {
 }
 
 /*
- * Runs the routine to load Pigeon Assembly instructions from STDIN into the
- * Pigeon VM's memory.
+ * Runs the routine to load Pigeon Assembly instructions from the given FILE
+ * handle into the Pigeon VM's memory.
  */
-void load_memory(STATE* state, int verbose) {
+void load_memory(FILE* in, STATE* state, int verbose) {
 
 	int linenum = 0;
 	int f_break = 0;
 
-	while (!feof(stdin)) {
+	while (!feof(in)) {
 		linenum++;
-		char* line = _getline(stdin);
+		char* line = _getline(in);
 
 		if (verbose) printf("LINE(%4i): %s", linenum, line);
 
