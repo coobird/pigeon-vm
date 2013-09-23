@@ -158,23 +158,50 @@ void parse(char* line, STATE* state) {
 }
 
 /*
+ * Reads a line from the FILE handle.
+ * Based on an answer by Marlon (http://stackoverflow.com/users/282474/marlon) on a Stack Overflow question:
+ * - http://stackoverflow.com/questions/5597513/line-by-line-reading-in-c-and-c/5597814#5597814
+ */
+char* _getline(FILE* in) {
+	int capacity = 80;
+	int length = 0;
+	char* line = malloc(capacity * sizeof(char));
+
+	while (!feof(in)) {
+		fgets(&line[length], capacity - length, in);
+
+		length = strlen(line);
+		if (!feof(in) && line[length - 1] != '\n') {
+			capacity = capacity * 2;
+			line = realloc(line, capacity * sizeof(char));
+		} else {
+			return line;
+		}
+	}
+}
+
+/*
  * Runs the routine to load Pigeon Assembly instructions from STDIN into the
  * Pigeon VM's memory.
  */
 void load_memory(STATE* state, int verbose) {
-	char line[80];
 
 	int linenum = 0;
+	int f_break = 0;
 
 	while (!feof(stdin)) {
-		memset(line, 0, 80);
-		fgets(line, 79, stdin);
+		linenum++;
+		char* line = _getline(stdin);
 
-		if (verbose) printf("LINE(%4i): %s", ++linenum, line);
+		if (verbose) printf("LINE(%4i): %s", linenum, line);
 
 		if (strncmp(line, "END", 3) == 0) {
-			break;
+			f_break = 1;
 		}
-		parse(line, state);
+
+		if (!f_break) parse(line, state);
+
+		free(line);
+		if (f_break) break;
 	}
 }
