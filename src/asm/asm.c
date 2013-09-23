@@ -161,7 +161,7 @@ void parse(char* line, STATE* state) {
  * Runs the routine to load Pigeon Assembly instructions from STDIN into the
  * Pigeon VM's memory.
  */
-void load_memory(STATE* state) {
+void load_memory(STATE* state, int verbose) {
 	char line[80];
 
 	int linenum = 0;
@@ -170,7 +170,7 @@ void load_memory(STATE* state) {
 		memset(line, 0, 80);
 		fgets(line, 79, stdin);
 
-		printf("LINE(%4i): %s", ++linenum, line);
+		if (verbose) printf("LINE(%4i): %s", ++linenum, line);
 
 		if (strncmp(line, "END", 3) == 0) {
 			break;
