@@ -1,7 +1,7 @@
-Pigeon, an Accumulator-based Virtual Machine
+Pigeon - an accumulator-based virtual machine
 ============================================
 
-Pigeon is an accumulator-based (1-operand) virtual machine.
+Pigeon is an accumulator-based (1-operand) virtual machine written in C.
 
 The virtual machine consists of:
 
@@ -35,11 +35,11 @@ The program counter increments by 1 the instruction from the indicated
 location is executed, except in cases of jumps, calls and conditional jump
 instructions.
 
-When the program counter reaches the last memory address, the execution of the
-virtual machine will terminate.
+When the program counter reaches the last memory address (address 4095), 
+the virtual machine will terminate.
 
 
-Data and Call stacks
+Data and Call Stacks
 --------------------
 
 There are two 8-level call stacks: the data stack and call stack.
@@ -85,59 +85,152 @@ The instuction set consists of the following opcodes:
  * Stack operations
   * `PUSH` and `POP`
 
+The following is a description of each instruction.
+
+* `ADD	<memory-address>`
+ * Adds the value contained in memory-address to the accumulator.
+* `SUB	<memory-address>`
+ * Subtracts the value contained in memory-address from the accumulator.
+* `AND	<memory-address>`
+ * Performs a logical AND operation between the value in memory-address and the
+   accumulator, then stores the result in the accumulator.
+* `OR	<memory-address>`
+ * Performs a logical OR operation between the value in memory-address and the
+   accumulator, then stores the result in the accumulator.
+* `XOR	<memory-address>`
+ * Performs a logical XOR operation between the value in memory-address and the
+   accumulator, then stores the result in the accumulator.
+* `NOT`
+ * Performs a logical NOT operation of the value contained in the accumulator
+    and stores the value back to the accumulator.
+* `LDM	<memory-address>`
+ * Loads a value from memory-address into the accumulator.* 
+* `LDI	<operand>`
+ * Loads a value of operand into the accumulator.
+* `STR	<memory-address>`
+ * Stores the value in the accumulator to the memory-address.
+* `JMP	<memory-address>`
+ * Jumps to memory-address and continues execution.
+* `JMZ	<memory-address>`
+ * If the accumulator contains zero (0), then jump to memory-address and begins
+   execution.
+* `JMN	<memory-address>`
+ * If the accumulator contains a negative value, then jump to memory-address and
+   begins execution.
+* `CALL	<memory-address>`
+ * Calls a subroutine at memory-address, stores the return address to the call
+   stack. The return address is the current address + 1.
+* `RETURN`
+ * Returns to the memory address at the top of the call stack.
+* `PUSH`
+ * Pushes the value of the accumulator to the stack.
+* `POP`
+ * Pops the value off the stack onto the accumulator.
+
+
+Programming Pigeon
+------------------
+
+Programming Pigeon is accomplished by writing Pigeon Assembly (pasm) code.
+
+Each line consists of:
+
 ```
-ADD	memory-address
-Adds the value contained in memory-address to the accumulator.
+<memory-address> <tab> <opcode> <tab> [operand]
+```
 
-SUB	memory-address
-Subtracts the value contained in memory-address from the accumulator.
+Each component must be delimited by a tab character.
 
-AND	memory-address
-Performs a logical AND operation between the value in memory-address and the
-accumulator, then stores the result in the accumulator.
+The `memory-address` is a value from `0` to `4095` corresponding to the
+address of the 12-bit memory space that the Pigeon has.
 
-OR	memory-address
-Performs a logical OR operation between the value in memory-address and the
-accumulator, then stores the result in the accumulator.
+The `opcode` and `operand` is as described in the previous section.
 
-XOR	memory-address
-Performs a logical XOR operation between the value in memory-address and the
-accumulator, then stores the result in the accumulator.
+In addition, "variables" can be mapped to specific memory addresses to
+assist in writing Pigeon Assembly code.
 
-NOT
-Performs a logical NOT operation of the value contained in the accumulator
-and stores the value back to the accumulator.
+A line that declares a variable is in the following format:
 
-LDM	memory-address
-Loads a value from memory-address into the accumulator.
+```
+<memory-address> <tab> DATA$<variable-name> <tab> <init-value>
+```
 
-LDI	operand
-Loads a value of operand into the accumulator.
+The variable name will be mapped to the specified memory address, and the
+memory address will be initialized with the specified value.
 
-STR	memory-address
-Stores the value in the accumulator to the memory-address.
+An example of use of a variable can be seen in the following example:
 
-JMP	memory-address
-Jumps to memory-address and begins execution.
+```
+# Varible declaration
+100	DATA$VAR	42
 
-JMZ	memory-address
-If the accumulator contains zero (0), then jump to memory-address and begins
-execution.
+# Program
+0	LDM	$VAR
+1	JMP	4095
+END
+```
 
-JMN	memory-address
-If the accumulator contains a negative value, then jump to memory-address and
-begins execution.
+The above program will load the value `42` from memory address `100` to the
+accumulator by using the "load from memory" (`LDM`) instruction.
 
-CALL	memory-address
-Calls a subroutine at memory-address, stores the return address to the call
-stack. The return address is the current address + 1.
+The program terminates after jumping to address 4095.
 
-RETURN
-Returns to the memory address at the top of the call stack.
+The `END` indicates that the end of the program has been reached, and the VM
+can start execution.
 
-PUSH
-Pushes the value of the accumulator to the stack.
+Also note that comments can be written by having a `#` character as the first
+character of a line.
 
-POP
-Pops the value off the stack onto the accumulator.
+
+Executing Pigeon
+----------------
+
+First, Pigeon can be built by simply running `make`:
+
+```
+$ make
+gcc -o src/main.o -c src/main.c
+gcc -o src/pigeon/pigeon.o -c src/pigeon/pigeon.c
+gcc -o src/asm/asm.o -c src/asm/asm.c
+gcc -o pigeon-vm src/main.o src/pigeon/pigeon.o src/asm/asm.o 
+```
+
+Running the VM is as simple as running `./pigeon-vm`.
+
+At this point, the VM will wait for instructions to run from `STDIN`.
+
+Try copy-and-pasting the example code from the previous section.
+
+This should now show some output from Pigeon:
+
+```
+$ ./pigeon-vm 
+# Varible declaration
+100	DATA$VAR	42
+
+# Program
+0	LDM	$VAR
+1	JMP	4095
+END
+pc:    0  opcode: LDM operand:  100  acc:     0  csp:  0  dsp:  0
+pc:    1  opcode: JMP operand: 4095  acc:    42  csp:  0  dsp:  0
+pc: 4095  opcode: JMP operand: 4095  acc:    42  csp:  0  dsp:  0
+$
+```
+
+There are a few example programs present in the `asm` directory.
+Those can be run by Pigeon by piping the program through to the VM:
+
+```
+$ cat asm/for_loop.pasm | ./pigeon-vm 
+pc:    0  opcode: LDM operand:  102  acc:     0  csp:  0  dsp:  0
+pc:    1  opcode: STR operand:  101  acc:     0  csp:  0  dsp:  0
+pc:    2  opcode: LDM operand:  101  acc:     0  csp:  0  dsp:  0
+
+  ... snip ...
+
+pc:    6  opcode: SUB operand:  101  acc:     5  csp:  0  dsp:  0
+pc:    7  opcode: JMZ operand: 4095  acc:     0  csp:  0  dsp:  0
+pc: 4095  opcode: JMZ operand: 4095  acc:     0  csp:  0  dsp:  0
+$
 ```
