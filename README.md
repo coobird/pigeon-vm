@@ -104,7 +104,7 @@ The following is a description of each instruction.
  * Performs a logical NOT operation of the value contained in the accumulator
     and stores the value back to the accumulator.
 * `LDM	<memory-address>`
- * Loads a value from memory-address into the accumulator.* 
+ * Loads a value from memory-address into the accumulator. 
 * `LDI	<operand>`
  * Loads a value of operand into the accumulator.
 * `STR	<memory-address>`
