@@ -60,4 +60,3 @@
 # - show the final Fibonacci number
 200	LDM	$C1
 201	JMP	$TERMINATE
-END
