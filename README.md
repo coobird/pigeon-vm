@@ -104,7 +104,7 @@ The following is a description of each instruction.
  * Performs a logical NOT operation of the value contained in the accumulator
     and stores the value back to the accumulator.
 * `LDM	<memory-address>`
- * Loads a value from memory-address into the accumulator.* 
+ * Loads a value from memory-address into the accumulator. 
 * `LDI	<operand>`
  * Loads a value of operand into the accumulator.
 * `STR	<memory-address>`
@@ -167,16 +167,12 @@ An example of use of a variable can be seen in the following example:
 # Program
 0	LDM	$VAR
 1	JMP	4095
-END
 ```
 
 The above program will load the value `42` from memory address `100` to the
 accumulator by using the "load from memory" (`LDM`) instruction.
 
 The program terminates after jumping to address 4095.
-
-The `END` indicates that the end of the program has been reached, and the VM
-can start execution.
 
 Also note that comments can be written by having a `#` character as the first
 character of a line.
@@ -211,7 +207,6 @@ $ ./pigeon-vm
 # Program
 0	LDM	$VAR
 1	JMP	4095
-END
 pc:    0  opcode: LDM operand:  100  acc:     0  csp:  0  dsp:  0
 pc:    1  opcode: JMP operand: 4095  acc:    42  csp:  0  dsp:  0
 pc: 4095  opcode: JMP operand: 4095  acc:    42  csp:  0  dsp:  0

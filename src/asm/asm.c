@@ -187,21 +187,19 @@ char* _getline(FILE* in) {
 void load_memory(FILE* in, STATE* state, int verbose) {
 
 	int linenum = 0;
-	int f_break = 0;
 
 	while (!feof(in)) {
 		linenum++;
 		char* line = _getline(in);
 
-		if (verbose) printf("LINE(%4i): %s", linenum, line);
-
-		if (strncmp(line, "END", 3) == 0) {
-			f_break = 1;
+		// Stop reading if EOF is encountered.
+		if (feof(in)) {
+			free(line);
+			break;
 		}
 
-		if (!f_break) parse(line, state);
-
+		if (verbose) printf("LINE(%4i): %s", linenum, line);
+		parse(line, state);
 		free(line);
-		if (f_break) break;
 	}
 }
